@@ -1,6 +1,6 @@
 # hackX Final — Brand, Palette & Assets (DRAFT)
 
-Tokens live in [`design/tokens.css`](../design/tokens.css). Partner/sponsor data in [`data/partners.json`](../data/partners.json). All files under `public/` are served from `/`.
+Tokens live in [`design/tokens.css`](../design/tokens.css). Partner data (names, tiers, logos, order) in [`content/brand.ts`](../content/brand.ts). All files under `public/` are served from `/`.
 
 ## 1. The key observation
 
@@ -54,7 +54,7 @@ hackX Jr swaps to teal: `jr-abyss #010E13`, `jr-deep #052E3F`, `jr-fill #18A0C0`
 | `public/brand/rounds/ideax.png` · `innox.png` | Round logos (ideaX 640×360, innoX 373×97) | Single version; innoX is dark gold, needs a light background |
 | `public/sponsors/ministry-of-science-and-technology/on-dark.png` · `on-light.png` | Primary sponsor | Transparent |
 | `public/sponsors/national-science-foundation/on-dark.png` · `on-light.png` | Primary sponsor | The old repo's dark/light files looked identical in size; verify on a dark background |
-| `public/partners/*.png` | 9 partner logos (see `data/partners.json` for order) | **White backgrounds only**; all transparent PNGs |
+| `public/partners/*.png` | 9 partner logos (order in `content/brand.ts`) | **White backgrounds only**; all transparent PNGs |
 | `public/stage/poseidon-trident.mp4` + `-poster.jpg` | Looping underwater Poseidon background video, 1280×720 poster | Total ~450 KB; dark teal `#082838`–`#083848` |
 
 Partner dominant colours (for tinting/placeholders): Evonsys `#1888B8`, Lion:Bit `#683888`, nVentures `#0898D8`, Generation Alpha `#383838` (+ green `#38A808`), SLASSCOM `#F8B818`/`#383878`, TiE Colombo `#D81828`, Virtusa `#181828`, Ministry `#0868A8`/`#E8A808`, NSF `#080808`/`#F89818`.

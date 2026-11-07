@@ -39,4 +39,16 @@
   --warn: 251 191 36;          /* #FBBF24 (light mode: 180 83 9) */
   --danger: 248 113 113;       /* #F87171 (light mode: 220 38 38) */
   --ok: 52 211 153;            /* #34D399 — new, not in the old app */
+
+  /* ── Operator UI (Framer-style: black canvas, white pills, one blue) ──
+     Only the control/home screens use these. Stage output keeps the brand. */
+  --ui-canvas: 9 9 9;          /* #090909 */
+  --ui-s1: 20 20 20;           /* #141414 cards */
+  --ui-s2: 31 31 31;           /* #1F1F1F featured / selected */
+  --ui-s3: 44 44 44;           /* #2C2C2C hover on s2 */
+  --ui-line: 38 38 38;         /* #262626 hairline */
+  --ui-ink: 255 255 255;
+  --ui-muted: 153 153 153;     /* #999999 */
+  --ui-accent: 0 153 255;      /* #0099FF focus / selection only */
+  --ui-live: 255 69 58;        /* tally red: what is on air */
 }
