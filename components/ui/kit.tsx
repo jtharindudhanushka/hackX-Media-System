@@ -93,12 +93,33 @@ export function Field(props: React.InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-export function Select({ className = "", ...rest }: React.SelectHTMLAttributes<HTMLSelectElement>) {
+// Native select (keyboard + OS picker) with the browser arrow replaced by our chevron.
+export function Select({ className = "", wrapClassName = "", tone = "pill", ...rest }: React.SelectHTMLAttributes<HTMLSelectElement> & { wrapClassName?: string; tone?: "pill" | "field" }) {
+  const base =
+    tone === "pill"
+      ? "h-9 rounded-full bg-ui-s1 pl-3.5 pr-9 text-[14px] font-medium hover:bg-ui-s2"
+      : "h-10 w-full rounded-[10px] bg-ui-canvas pl-3 pr-9 text-[14px]";
   return (
-    <select
-      {...rest}
-      className={`h-9 rounded-full bg-ui-s1 px-3.5 text-[14px] font-medium text-ui-ink hover:bg-ui-s2 focus:outline-none ${className}`}
-    />
+    <span className={`relative inline-flex items-center ${tone === "field" ? "w-full" : ""} ${wrapClassName}`}>
+      <select {...rest} className={`appearance-none text-ui-ink focus:outline-none ${base} ${className}`} />
+      <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-ui-muted" />
+    </span>
+  );
+}
+
+export function ChevronDown({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden className={className}>
+      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function ArrowUpRight({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden className={className}>
+      <path d="M5 11L11 5M6 5h5v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 

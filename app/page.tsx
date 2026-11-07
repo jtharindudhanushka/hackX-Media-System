@@ -7,7 +7,7 @@ import { allCues } from "@/content/cues";
 import { useOffline } from "@/lib/offline";
 import { isFirebaseConfigured } from "@/lib/firebase";
 import { StatusPills } from "@/components/control/StatusPills";
-import { Btn, Caption, Card } from "@/components/ui/kit";
+import { ArrowUpRight, Btn, Caption, Card } from "@/components/ui/kit";
 
 export default function Home() {
   const off = useOffline();
@@ -83,8 +83,8 @@ function ChannelCard({ id, name }: { id: string; name: string }) {
         <a href={`/control/${id}/`} className="inline-flex h-10 flex-1 items-center justify-center rounded-full bg-white text-[14px] font-medium text-black transition active:scale-[0.97]">
           Control
         </a>
-        <a href={`/output/${id}/`} target={`out-${id}`} className="inline-flex h-10 flex-1 items-center justify-center rounded-full bg-ui-s2 text-[14px] font-medium hover:bg-ui-s3">
-          Output ↗
+        <a href={`/output/${id}/`} target={`out-${id}`} className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-ui-s2 text-[14px] font-medium hover:bg-ui-s3">
+          Output <ArrowUpRight />
         </a>
       </div>
     </Card>

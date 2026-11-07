@@ -129,6 +129,20 @@ body {
   100% { transform: translate3d(var(--dx), 1200px, 0) rotate(var(--rot)); opacity: 0; }
 }
 
+/* ring timer (ideaX design): animatable progress + alerts */
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+.ring-flash { animation: ring-flash 1s ease-in-out infinite; }
+.ring-pulse { animation: ring-pulse 1.6s ease-in-out infinite; }
+@keyframes ring-flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.035); filter: brightness(1.25); }
+}
+
 /* timer alerts */
 .edge-warn { box-shadow: inset 0 0 220px 40px rgb(var(--warn) / 0.7); animation: edge 1.2s ease-in-out infinite; }
 .edge-over { box-shadow: inset 0 0 260px 60px rgb(var(--danger) / 0.8); animation: edge 1.6s ease-in-out infinite; }

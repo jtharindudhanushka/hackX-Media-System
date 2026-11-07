@@ -10,7 +10,7 @@ import { allCues, stepsOf } from "@/content/cues";
 import type { ChannelState } from "@/lib/types";
 import { Stage, RenderModeContext } from "@/components/stage/Stage";
 import { CueRenderer, ProgramView } from "@/components/scenes/CueRenderer";
-import { Btn, Caption, Card, Kbd, LiveDot, Select } from "@/components/ui/kit";
+import { ArrowUpRight, Btn, Caption, Card, Kbd, LiveDot, Select } from "@/components/ui/kit";
 import { ControlGate } from "./ControlGate";
 import { CueList } from "./CueList";
 import { TimerPanel } from "./TimerPanel";
@@ -66,7 +66,7 @@ function TopBar({ channelId, state, userLabel, signOut }: { channelId: string; s
       <div className="ml-auto flex items-center gap-2">
         <DisplayPicker channelId={channelId} />
         <Btn size="sm" variant="quiet" onClick={() => window.open(`/output/${channelId}/`, "_blank")} title="Open the output in a normal tab (e.g. for window capture)">
-          Output tab ↗
+          Output tab <ArrowUpRight />
         </Btn>
         <span className="mx-1 h-5 w-px bg-ui-line" />
         <span className="max-w-[180px] truncate text-[13px] text-ui-muted">{userLabel}</span>

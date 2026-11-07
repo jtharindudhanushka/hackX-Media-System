@@ -4,7 +4,7 @@ import { allCues, type Collection } from "@/content/cues";
 import { teamsOf } from "@/content/teams";
 import { EVENTS } from "@/content/brand";
 import { setOverride } from "@/lib/actions";
-import { Caption, Card } from "@/components/ui/kit";
+import { Caption, Card, Select } from "@/components/ui/kit";
 
 const PLACE = { champion: "Champions", first: "1st Runners-Up", second: "2nd Runners-Up", popular: "Most Popular" } as const;
 
@@ -29,10 +29,12 @@ export function WinnersPanel({ channelId, collection, overrides }: { channelId: 
             <span className="text-[12px] text-ui-muted">
               {EVENTS[event].name} · {PLACE[place]}
             </span>
-            <select
+            <Select
+              tone="field"
+              wrapClassName="mt-1"
               value={overrides[slot] ?? ""}
               onChange={(e) => setOverride(channelId, slot, e.target.value)}
-              className={`mt-1 h-10 w-full rounded-[10px] bg-ui-canvas px-3 text-[14px] focus:outline-none ${overrides[slot] ? "text-ui-ink shadow-[0_0_0_1px_rgb(var(--ui-accent)/0.45)]" : "text-ui-muted"}`}
+              className={overrides[slot] ? "shadow-[0_0_0_1px_rgb(var(--ui-accent)/0.45)]" : "!text-ui-muted"}
             >
               <option value="">Not set</option>
               {teamsOf(event).map((t) => (
@@ -40,7 +42,7 @@ export function WinnersPanel({ channelId, collection, overrides }: { channelId: 
                   {t.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         ))}
       </div>

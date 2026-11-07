@@ -1,16 +1,18 @@
 "use client";
 
 import type { EventId, TimerState } from "@/lib/types";
-import { EVENTS } from "@/content/brand";
+import { EVENTS, TITLE_PARTNERS } from "@/content/brand";
 import { teamById } from "@/content/teams";
-import { formatClock, useTimerRemaining } from "@/lib/hooks";
+import { useTimerRemaining } from "@/lib/hooks";
+import { RingTimer, type TimerTone } from "@/components/stage/RingTimer";
 import { accentVar, Backdrop, CornerMark, Img } from "@/components/stage/primitives";
 
 const textGrad = (e: EventId) => (e === "jr" ? "jr-text" : "gold-text");
 const accentText = (e: EventId) => (e === "jr" ? "text-amber-jr" : "text-gold");
 
 // Team intro loop — shown while the host announces the team.
-export function TeamScene({ teamId, index, total }: { teamId: string; index?: number; total?: number }) {
+// The running order is shown as a number only — never "x of y".
+export function TeamScene({ teamId, index }: { teamId: string; index?: number; total?: number }) {
   const team = teamById(teamId);
   if (!team) return <MissingTeam id={teamId} />;
   const ev = EVENTS[team.event];
@@ -31,7 +33,7 @@ export function TeamScene({ teamId, index, total }: { teamId: string; index?: nu
       </div>
       <div className="absolute inset-x-[130px] top-[360px]">
         <p className={`eyebrow rise text-[34px] ${accentText(team.event)}`}>
-          {team.solo ? "Participant" : "Team"} {index != null ? `${String(index).padStart(2, "0")}${total ? ` / ${total}` : ""}` : ""}
+          {team.solo ? "Participant" : "Team"} {index != null ? String(index).padStart(2, "0") : ""}
         </p>
         <h1 className={`slam mt-6 font-display font-extrabold leading-[0.95] tracking-tight ${textGrad(team.event)}`} style={{ fontSize: long ? 150 : 200 }}>
           {team.name}
@@ -63,45 +65,63 @@ function MissingTeam({ id }: { id: string }) {
   );
 }
 
-// Pitch / Q&A timer. Q&A uses the Q&A video as the background.
+// Pitch / Q&A timer — the ideaX ring design. Q&A uses the Q&A video as backdrop.
+function formatTime(sec: number) {
+  const abs = Math.abs(Math.round(sec));
+  return `${sec < 0 ? "-" : ""}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
+}
+
 export function TimerScene({ event, teamId, phase, timer }: { event: EventId; teamId?: string; phase: "pitch" | "qa"; timer: TimerState }) {
   const remaining = useTimerRemaining(timer);
   const team = teamById(teamId);
   const ev = EVENTS[event];
-  const duration = timer.duration || 1;
-  const progress = Math.max(0, Math.min(1, remaining / duration));
-  const tone = remaining < 0 ? "over" : remaining <= 60 && timer.status !== "idle" ? "warn" : "normal";
-  const color = tone === "over" ? "rgb(var(--danger))" : tone === "warn" ? "rgb(var(--warn))" : "#fff";
+  const duration = timer.duration;
+  const over = remaining < 0;
+  const tone: TimerTone = over ? "over" : remaining <= 60 && timer.status !== "idle" ? "warn" : "normal";
+  // overtime: full red ring, gently pulsing
+  const progress = over ? 1 : duration > 0 ? remaining / duration : 1;
+  const alert = over ? "pulse" : timer.status === "running" && remaining <= 30 ? "flash" : undefined;
+  const size = 860;
+  const timeColor = tone === "over" ? "#F87171" : tone === "warn" ? "#FCD34D" : "#fff";
+  const status = over
+    ? { label: "Time's up", color: "#F87171" }
+    : timer.status === "paused"
+      ? { label: "Paused", color: "#FCD34D" }
+      : timer.status === "idle"
+        ? { label: "Ready", color: "rgb(255 255 255 / 0.55)" }
+        : null;
 
   return (
     <div className="absolute inset-0">
       <Backdrop brand={event} video={phase === "qa" ? "qaVideo" : undefined} dim={0.65} />
-      {tone === "warn" && timer.status === "running" && <div className="edge-warn pointer-events-none absolute inset-0" />}
-      {tone === "over" && <div className="edge-over pointer-events-none absolute inset-0" />}
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 55% at 50% 50%, rgb(255 255 255 / 0.06), transparent 70%)" }} />
+      {alert === "flash" && <div className="edge-warn pointer-events-none absolute inset-0" />}
+      {alert === "pulse" && <div className="edge-over pointer-events-none absolute inset-0" />}
 
-      <div className="absolute left-[110px] right-[110px] top-[90px] flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Img src={ev.logo.onDark} alt={ev.name} style={{ height: 110 }} />
-          <span className="h-[70px] w-[3px] bg-white/25" />
-          <div>
-            <p className={`eyebrow text-[24px] ${accentText(event)}`}>{phase === "qa" ? "Q&A Session" : "Pitching"}</p>
-            <p className="mt-1 font-display text-[54px] font-extrabold leading-tight">{team?.name ?? ev.name}</p>
+      <Img src={ev.logo.onDark} alt={ev.name} className="absolute left-[80px] top-[64px]" style={{ height: 96 }} />
+
+      {/* title partners, top right */}
+      <div className="absolute right-[80px] top-[64px] flex items-center gap-[40px]">
+        {TITLE_PARTNERS.map((p) => (
+          <Img key={p.id} src={p.onDark ?? p.logo!} alt={p.name} style={{ height: 84 }} />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 flex items-center justify-center pt-[40px]">
+        <RingTimer event={event} progress={progress} tone={tone} alert={alert} size={size}>
+          {team && (
+            <p className="mb-[22px] line-clamp-2 max-w-[78%] font-display font-bold leading-[1.05] tracking-[-0.02em] text-white/90" style={{ fontSize: size * (team.name.length > 16 ? 0.05 : 0.06) }}>
+              {team.name}
+            </p>
+          )}
+          <div className="tabular font-display font-extrabold leading-none tracking-[-0.04em] transition-colors duration-500" style={{ fontSize: size * (over ? 0.17 : 0.205), color: timeColor }}>
+            {formatTime(remaining)}
           </div>
-        </div>
-        {timer.status === "paused" && <p className="eyebrow rounded-full border-2 border-white/40 px-8 py-3 text-[26px] text-white/80">Paused</p>}
-      </div>
-
-      <div className="absolute inset-x-0 top-[300px] flex flex-col items-center">
-        <p className="tabular font-display font-extrabold leading-none tracking-tight transition-colors duration-500" style={{ fontSize: 420, color, textShadow: "0 20px 80px rgb(0 0 0 / 0.6)" }}>
-          {formatClock(remaining)}
-        </p>
-        <p className="eyebrow mt-4 text-[30px]" style={{ color: tone === "normal" ? "rgb(255 255 255 / 0.65)" : color }}>
-          {tone === "over" ? "Time is up" : tone === "warn" ? "Final minute" : phase === "qa" ? "Questions from the judges" : "Time remaining"}
-        </p>
-      </div>
-
-      <div className="absolute bottom-[110px] left-[160px] right-[160px] h-[22px] overflow-hidden rounded-full bg-white/10">
-        <div className="h-full rounded-full transition-[width] duration-300 ease-linear" style={{ width: `${progress * 100}%`, background: tone === "normal" ? `linear-gradient(90deg, rgb(var(--ember)), rgb(var(${accentVar(event)})))` : color }} />
+          <p className="mt-[20px] font-extrabold uppercase tracking-[0.2em]" style={{ fontSize: size * 0.032 }}>
+            <span style={{ color: event === "jr" ? "rgb(var(--jr-glow))" : "rgb(var(--glow))" }}>{phase === "qa" ? "Q&A" : "Pitch"}</span>
+            {status ? <span style={{ color: status.color }}> · {status.label}</span> : <span className="text-white/55"> / {formatTime(duration)}</span>}
+          </p>
+        </RingTimer>
       </div>
     </div>
   );
